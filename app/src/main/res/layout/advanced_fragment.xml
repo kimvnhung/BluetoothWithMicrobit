@@ -10,6 +10,7 @@
         android:orientation="vertical"
         android:layout_weight="5">
         <Button
+            android:id="@+id/up_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -22,27 +23,31 @@
             android:orientation="horizontal"
             android:gravity="center">
             <Button
+                android:id="@+id/left_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/left_arrow"/>
             <Button
+                android:id="@+id/stop_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/stop_btn"/>
             <Button
+                android:id="@+id/right_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/right_arrow"/>
         </LinearLayout>
         <Button
+            android:id="@+id/down_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_gravity="center"
-            android:background="@drawable/down_arrow"/>
+            android:background="@drawable/down_pressed"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="wrap_content"
@@ -56,11 +61,13 @@
             android:orientation="horizontal"
             android:gravity="center">
             <Button
+                android:id="@+id/p0"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/p0_btn"/>
             <Button
+                android:id="@+id/p1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -73,11 +80,13 @@
             android:orientation="horizontal"
             android:gravity="center">
             <Button
+                android:id="@+id/p2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/p2_btn"/>
             <Button
+                android:id="@+id/p3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
