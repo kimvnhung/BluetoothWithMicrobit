@@ -1,4 +1,4 @@
-package com.hung.kimvan.bluetoothwithmicrobit;
+package com.hung.kimvan.bluetoothwithmicrobit.Fragment;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.hung.kimvan.bluetoothwithmicrobit.R;
 
 public class AdvanceFragment extends Fragment implements View.OnClickListener{
     Button upBt,downBt,rightBt,leftBt,stopBt,p0,p1,p2,p3;

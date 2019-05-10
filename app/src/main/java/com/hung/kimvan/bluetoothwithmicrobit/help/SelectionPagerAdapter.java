@@ -1,4 +1,4 @@
-package com.hung.kimvan.bluetoothwithmicrobit;
+package com.hung.kimvan.bluetoothwithmicrobit.help;
 
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;

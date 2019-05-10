@@ -1,4 +1,4 @@
-package com.hung.kimvan.bluetoothwithmicrobit;
+package com.hung.kimvan.bluetoothwithmicrobit.Fragment;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.hung.kimvan.bluetoothwithmicrobit.R;
 
 public class BasicFragment extends Fragment implements View.OnClickListener {
     Button sendBtn;
