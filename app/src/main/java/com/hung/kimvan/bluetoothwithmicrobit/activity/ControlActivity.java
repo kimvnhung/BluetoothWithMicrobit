@@ -14,9 +14,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -33,10 +35,12 @@ import com.hung.kimvan.bluetoothwithmicrobit.help.MicroBit;
 import com.hung.kimvan.bluetoothwithmicrobit.help.SelectionPagerAdapter;
 import com.hung.kimvan.bluetoothwithmicrobit.help.Utility;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ControlActivity extends AppCompatActivity implements ConnectionStatusListener {
+public class ControlActivity extends AppCompatActivity implements ConnectionStatusListener,
+        BasicFragment.BasicFragmentListener {
     public static final String EXTRA_NAME = "extra_name";
     public static final String EXTRA_ID = "extra_id";
 
@@ -115,7 +119,10 @@ public class ControlActivity extends AppCompatActivity implements ConnectionStat
                               runOnUiThread(new Runnable() {
                                   @Override
                                   public void run() {
-                                      ((TextView) ControlActivity.this.findViewById(R.id.message)).setText(Html.fromHtml(msg));
+                                      /*BasicFragment basicFragment = (BasicFragment) ((SelectionPagerAdapter)viewPager.getAdapter()).
+                                              getItem(viewPager.getCurrentItem());
+                                      basicFragment.setStatus(Html.fromHtml(msg));
+                                      */
                                   }
                               });
                           }
@@ -171,6 +178,35 @@ public class ControlActivity extends AppCompatActivity implements ConnectionStat
 
     }
 
+    private void refreshBluetoothServices() {
+        if (MicroBit.getInstance().isMicrobit_connected()) {
+            Toast toast = Toast.makeText(this, "Refreshing GATT services", Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+            MicroBit.getInstance().resetAttributeTables();
+            bluetooth_le_adapter.refreshDeviceCache();
+            bluetooth_le_adapter.discoverServices();
+        } else {
+            Toast toast = Toast.makeText(this, "Request Ignored - Not Connected", Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d(Constants.TAG, "onBackPressed");
+        if (MicroBit.getInstance().isMicrobit_connected()) {
+            try {
+                bluetooth_le_adapter.disconnect();
+                // may already have unbound. No API to check state so....
+                unbindService(mServiceConnection);
+            } catch (Exception e) {
+            }
+        }
+        finish();
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -178,6 +214,32 @@ public class ControlActivity extends AppCompatActivity implements ConnectionStat
             // may already have unbound. No API to check state so....
             unbindService(mServiceConnection);
         } catch (Exception e) {
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (MicroBit.getInstance().isMicrobit_connected()) {
+            showMsg(Utility.htmlColorGreen("Connected"));
+        } else {
+            showMsg(Utility.htmlColorRed("Disconnected"));
+        }
+    }
+
+    @Override
+    public void sendContent(String content) {
+        try {
+            String question = content + ":";
+            byte[] ascii_bytes = question.getBytes("US-ASCII");
+            Log.d(Constants.TAG, "ASCII bytes: 0x" + Utility.byteArrayAsHexString(ascii_bytes));
+            bluetooth_le_adapter.writeCharacteristic(Utility.normaliseUUID(BleAdapterService.UARTSERVICE_SERVICE_UUID), Utility.normaliseUUID(BleAdapterService.UART_RX_CHARACTERISTIC_UUID), ascii_bytes);
+            BasicFragment basicFragment = (BasicFragment) ((SelectionPagerAdapter)viewPager.getAdapter()).
+                    getItem(viewPager.getCurrentItem());
+            basicFragment.setReceiveContent(content);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            showMsg("Unable to convert text to ASCII bytes");
         }
     }
 }

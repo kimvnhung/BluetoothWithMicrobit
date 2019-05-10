@@ -1,21 +1,5 @@
 package com.hung.kimvan.bluetoothwithmicrobit.activity;
-/*
- * Author: Martin Woolley
- * Twitter: @bluetooth_mdw
- *
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
+
 
 import android.Manifest;
 import android.bluetooth.BluetoothDevice;
@@ -164,7 +148,19 @@ public class MainActivity extends AppCompatActivity implements ScanResultsConsum
             startActivityForResult(intent, MainSettingsActivity.START_MAIN_SETTINGS);
             return true;
         }
-
+        /*
+        if (id == R.id.menu_main_help) {
+            Intent intent = new Intent(MainActivity.this, HelpActivity.class);
+            intent.putExtra(Constants.URI, Constants.MAIN_HELP);
+            startActivity(intent);
+            return true;
+        }
+        if (id == R.id.menu_main_about) {
+            Intent intent = new Intent(MainActivity.this, HelpActivity.class);
+            intent.putExtra(Constants.URI, Constants.MAIN_ABOUT);
+            startActivity(intent);
+            return true;
+        }*/
         return super.onOptionsItemSelected(item);
     }
 
@@ -389,16 +385,16 @@ public class MainActivity extends AppCompatActivity implements ScanResultsConsum
 
             if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                        if (device.getBondState() == BluetoothDevice.BOND_NONE) {
-                            showMsg(Utility.htmlColorRed("Device was not paired successfully"));
-                        } else if (device.getBondState() == BluetoothDevice.BOND_BONDING) {
-                            showMsg(Utility.htmlColorGreen("Pairing is in progress"));
-                        } else {
-                            showMsg(Utility.htmlColorGreen("Device was paired successfully - select it now"));
-                        }
+                if (device.getBondState() == BluetoothDevice.BOND_NONE) {
+                    showMsg(Utility.htmlColorRed("Device was not paired successfully"));
+                } else if (device.getBondState() == BluetoothDevice.BOND_BONDING) {
+                    showMsg(Utility.htmlColorGreen("Pairing is in progress"));
+                } else {
+                    showMsg(Utility.htmlColorGreen("Device was paired successfully - select it now"));
                 }
             }
-        };
+        }
+    };
 
     private void showMsg(final String msg) {
         Log.d(Constants.TAG, msg);

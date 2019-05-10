@@ -15,7 +15,6 @@
             app:tabMaxWidth="0dp"
             app:tabMode="fixed"
             android:id="@+id/tabs"/>
-
     </android.support.design.widget.AppBarLayout>
     <android.support.v4.view.ViewPager
         android:layout_below="@+id/app_bar"
