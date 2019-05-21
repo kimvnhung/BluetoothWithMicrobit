@@ -9,4 +9,33 @@
 
     <string name="bluetooth_scanning">Bluetooth Scanning</string>
     <string name="scan_filter_unpaired">Filter unpaired micro:bits from scan results?</string>
+    <string name="source_orgnization">MLAB.VN</string>
+    <string name="forward">Tiến</string>
+    <string name="backward">Lùi</string>
+    <string name="stop">Dừng</string>
+    <string name="p1">P1</string>
+    <string name="p2">P2</string>
+    <string name="p3">P3</string>
+    <string name="right">Phải</string>
+    <string name="left">Trái</string>
+    <string name="right_forward">Tiến Phải</string>
+    <string name="left_forward">Tiến Trái</string>
+    <string name="right_backward">Lùi Phải</string>
+    <string name="left_backward">Lùi Trái</string>
+    <string name="pref_name">BluetoothWithMicrobitSetting</string>
+    <string name="save">Lưu</string>
+    <string name="forward_pref">forward</string>
+    <string name="backward_pref">backward</string>
+    <string name="stop_pref">stop</string>
+    <string name="right_pref">right</string>
+    <string name="left_pref">left</string>
+    <string name="rightf_pref">rightf</string>
+    <string name="leftf_pref">leftf</string>
+    <string name="rightb_pref">rightb</string>
+    <string name="leftb_pref">leftb</string>
+    <string name="p0_pref">p0</string>
+    <string name="p1_pref">p1</string>
+    <string name="p2_pref">p2</string>
+    <string name="p3_pref">p3</string>
+    <string name="p0">P0</string>
 </resources>

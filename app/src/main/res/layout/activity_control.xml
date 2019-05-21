@@ -20,7 +20,31 @@
         android:layout_below="@+id/app_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/view_pager"/>
+        android:id="@+id/view_pager"
+        android:layout_marginTop="30dp"/>
+    <RelativeLayout
+        android:id="@+id/status_layout"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@+id/app_bar">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/source_orgnization"
+            android:layout_marginStart="10dp"
+            android:gravity="center"
+            android:textColor="@color/red"/>
+        <TextView
+            android:id="@+id/message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="example"
+            android:textSize="@dimen/status_text_size"
+            android:textColor="@color/green"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="5dp"/>
+    </RelativeLayout>
 
 
 </RelativeLayout>

@@ -101,4 +101,6 @@ public class Constants {
 
     public static final String AVM_CORRECT_RESPONSE = "GOT IT!!";
 
+    public static final int minCycle = 50; // ms
+
 }
