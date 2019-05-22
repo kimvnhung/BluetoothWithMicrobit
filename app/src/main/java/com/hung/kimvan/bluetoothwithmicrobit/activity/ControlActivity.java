@@ -391,11 +391,17 @@ public class ControlActivity extends AppCompatActivity implements ConnectionStat
     @Override
     public void sendContent(String content) {
         try {
-            String question = content + ":";
-            byte[] ascii_bytes = question.getBytes("US-ASCII");
-            Log.d(Constants.TAG, "ASCII bytes: 0x" + Utility.byteArrayAsHexString(ascii_bytes));
-            bluetooth_le_adapter.writeCharacteristic(Utility.normaliseUUID(BleAdapterService.UARTSERVICE_SERVICE_UUID),
-                    Utility.normaliseUUID(BleAdapterService.UART_RX_CHARACTERISTIC_UUID), ascii_bytes);
+            if (MicroBit.getInstance().hasService(BleAdapterService.UARTSERVICE_SERVICE_UUID)) {
+                String question = content + ":";
+                byte[] ascii_bytes = question.getBytes("US-ASCII");
+                Log.d(Constants.TAG, "ASCII bytes: 0x" + Utility.byteArrayAsHexString(ascii_bytes));
+                bluetooth_le_adapter.writeCharacteristic(Utility.normaliseUUID(BleAdapterService.UARTSERVICE_SERVICE_UUID),
+                        Utility.normaliseUUID(BleAdapterService.UART_RX_CHARACTERISTIC_UUID), ascii_bytes);
+            } else {
+                showMsg(Utility.htmlColorRed("UART Service not on this micro:bit"));
+                refreshBluetoothServices();
+            }
+
 
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();

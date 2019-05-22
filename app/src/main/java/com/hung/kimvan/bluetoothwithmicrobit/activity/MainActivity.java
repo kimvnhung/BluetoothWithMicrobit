@@ -41,6 +41,7 @@ import com.hung.kimvan.bluetoothwithmicrobit.bluetooth.BleScanner;
 import com.hung.kimvan.bluetoothwithmicrobit.bluetooth.BleScannerFactory;
 import com.hung.kimvan.bluetoothwithmicrobit.bluetooth.ScanResultsConsumer;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements ScanResultsConsumer {
@@ -56,6 +57,8 @@ public class MainActivity extends AppCompatActivity implements ScanResultsConsum
     private static final String DEVICE_NAME_START = "BBC micro";
     private int device_count=0;
     private Toast toast;
+
+    BluetoothDevice device;
 
     static class ViewHolder {
         public TextView text;
@@ -97,8 +100,8 @@ public class MainActivity extends AppCompatActivity implements ScanResultsConsum
                     ble_scanner.stopScanning();
                 }
 
-                BluetoothDevice device = ble_device_list_adapter.getDevice(position);
-                if (device.getBondState() == BluetoothDevice.BOND_NONE && Settings.getInstance().isFilter_unpaired_devices()) {
+                device = ble_device_list_adapter.getDevice(position);
+                if (device.getBondState() == BluetoothDevice.BOND_NONE ) {
                     device.createBond();
                     showMsg(Utility.htmlColorRed("Selected micro:bit must be paired - pairing now"));
                     return;
@@ -127,6 +130,13 @@ public class MainActivity extends AppCompatActivity implements ScanResultsConsum
         super.onDestroy();
         try {
             unregisterReceiver(broadcastReceiver);
+            try {
+                Method m = device.getClass()
+                        .getMethod("removeBond", (Class[]) null);
+                m.invoke(device, (Object[]) null);
+            } catch (Exception e) {
+                Log.e(Constants.TAG, "onRemoveBond()"+e.getMessage());
+            }
         } catch (Exception e) {
             Log.d(Constants.TAG,e.getClass().getCanonicalName()+":"+e.getMessage());
         }
