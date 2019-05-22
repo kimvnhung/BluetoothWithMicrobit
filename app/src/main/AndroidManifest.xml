@@ -39,6 +39,7 @@
         <service
             android:name=".bluetooth.BleAdapterService"
             android:enabled="true" />
+
     </application>
 
 

@@ -37,6 +37,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 
+import com.hung.kimvan.bluetoothwithmicrobit.activity.ControlActivity;
 import com.hung.kimvan.bluetoothwithmicrobit.help.Constants;
 import com.hung.kimvan.bluetoothwithmicrobit.help.MicroBit;
 import com.hung.kimvan.bluetoothwithmicrobit.help.Utility;
@@ -246,6 +247,7 @@ public class BleAdapterService extends Service implements Runnable {
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt,
                                             BluetoothGattCharacteristic characteristic) {
+            Log.d(Constants.TAG,"onCharacteristicChanged() ");
             timestamp();
             Bundle bundle = new Bundle();
             bundle.putString(PARCEL_CHARACTERISTIC_UUID, characteristic.getUuid().toString());

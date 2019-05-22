@@ -75,13 +75,14 @@ public class ControlActivity extends AppCompatActivity implements ConnectionStat
             bluetooth_le_adapter.setActivityHandler(mMessageHandler);
             connectToDevice();
 
-            /*
-            if (bluetooth_le_adapter.setIndicationsState(Utility.normaliseUUID(BleAdapterService.UARTSERVICE_SERVICE_UUID), Utility.normaliseUUID(BleAdapterService.UART_TX_CHARACTERISTIC_UUID), true)) {
+
+            if (bluetooth_le_adapter.setIndicationsState(Utility.normaliseUUID(BleAdapterService.UARTSERVICE_SERVICE_UUID),
+                    Utility.normaliseUUID(BleAdapterService.UART_TX_CHARACTERISTIC_UUID), true)) {
                 showMsg(Utility.htmlColorGreen("UART TX indications ON"));
             } else {
                 showMsg(Utility.htmlColorRed("Failed to set UART TX indications ON"));
             }
-            */
+
         }
 
         @Override
@@ -105,6 +106,7 @@ public class ControlActivity extends AppCompatActivity implements ConnectionStat
         final Intent intent = getIntent();
         MicroBit.getInstance().setMicrobit_name(intent.getStringExtra(EXTRA_NAME));
         MicroBit.getInstance().setMicrobit_address(intent.getStringExtra(EXTRA_ID));
+
         MicroBit.getInstance().setConnection_status_listener(this);
 
         // connect to the Bluetooth service
@@ -187,6 +189,48 @@ public class ControlActivity extends AppCompatActivity implements ConnectionStat
                     }
                     MicroBit.getInstance().setMicrobit_services_discovered(true);
                     break;
+                case BleAdapterService.NOTIFICATION_OR_INDICATION_RECEIVED:
+                    bundle = msg.getData();
+                    service_uuid = bundle.getString(BleAdapterService.PARCEL_SERVICE_UUID);
+                    characteristic_uuid = bundle.getString(BleAdapterService.PARCEL_CHARACTERISTIC_UUID);
+                    b = bundle.getByteArray(BleAdapterService.PARCEL_VALUE);
+                    Log.d(Constants.TAG, "Value=" + Utility.byteArrayAsHexString(b));
+                    if (characteristic_uuid.equalsIgnoreCase((Utility.normaliseUUID(BleAdapterService.UART_TX_CHARACTERISTIC_UUID)))) {
+                        String ascii="";
+                        Log.d(Constants.TAG, "UART TX received");
+                        try {
+                            ascii = new String(b,"US-ASCII");
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                            showMsg(Utility.htmlColorGreen("Could not convert TX data to ASCII"));
+                            return;
+                        }
+                        Log.d(Constants.TAG, "micro:bit answer: " + ascii);
+                        if (!ascii.equals(Constants.AVM_CORRECT_RESPONSE)) {
+                            showAnswer(ascii);
+                        } else {
+                            showAnswer(ascii+" You only needed "+0+" guesses!");
+                        }
+                    }
+                    break;
+            }
+        }
+    };
+
+
+    // Service message handler�//////////////////
+    private Handler mMessageHandler2 = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+
+            Bundle bundle;
+            String service_uuid = "";
+            String characteristic_uuid = "";
+            String descriptor_uuid = "";
+            byte[] b = null;
+            TextView value_text = null;
+
+            switch (msg.what) {
                 case BleAdapterService.GATT_CHARACTERISTIC_WRITTEN:
                     Log.d(Constants.TAG, "Handler received characteristic written result");
                     bundle = msg.getData();
@@ -240,10 +284,21 @@ public class ControlActivity extends AppCompatActivity implements ConnectionStat
                     bundle = msg.getData();
                     String text = bundle.getString(BleAdapterService.PARCEL_TEXT);
                     showMsg(Utility.htmlColorRed(text));
+                    break;
+                case BleAdapterService.GATT_SERVICES_DISCOVERED:
+                    Log.d(Constants.TAG, "XXXX Services discovered");
+                    showMsg(Utility.htmlColorGreen("Ready"));
+                    //((LinearLayout) ControlActivity.this.findViewById(R.id.menu_items_area)).setVisibility(View.VISIBLE);
+                    List<BluetoothGattService> slist = bluetooth_le_adapter.getSupportedGattServices();
+                    for (BluetoothGattService svc : slist) {
+                        Log.d(Constants.TAG, "UUID=" + svc.getUuid().toString().toUpperCase() + " INSTANCE=" + svc.getInstanceId());
+                        MicroBit.getInstance().addService(svc);
+                    }
+                    MicroBit.getInstance().setMicrobit_services_discovered(true);
+                    break;
             }
         }
     };
-
 
     private void showAnswer(String answer) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -293,7 +348,20 @@ public class ControlActivity extends AppCompatActivity implements ConnectionStat
             } catch (Exception e) {
             }
         }
+        if (MicroBit.getInstance().isMicrobit_connected() && indications_on) {
+            exiting = true;
+            bluetooth_le_adapter.setIndicationsState(Utility.normaliseUUID(BleAdapterService.UARTSERVICE_SERVICE_UUID), Utility.normaliseUUID(BleAdapterService.UART_TX_CHARACTERISTIC_UUID), false);
+        }
+        exiting=true;
+        if (!MicroBit.getInstance().isMicrobit_connected()) {
+            try {
+                // may already have unbound. No API to check state so....
+                unbindService(mServiceConnection);
+            } catch (Exception e) {
+            }
+        }
         finish();
+        exiting=true;
     }
 
     @Override

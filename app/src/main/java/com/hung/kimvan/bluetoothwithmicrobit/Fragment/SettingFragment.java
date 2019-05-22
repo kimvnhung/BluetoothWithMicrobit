@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.hung.kimvan.bluetoothwithmicrobit.R;
 import com.hung.kimvan.bluetoothwithmicrobit.help.Constants;
@@ -51,6 +52,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
         Log.d(Constants.TAG,"getActivity()"+getActivity().getClass());
 
         loadSetting();
+        Log.d(Constants.TAG,"onCreateView() "+this.getClass());
         return view;
     }
 
@@ -112,10 +114,11 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
         String p2s = p2.getText().toString();
         String p3s = p3.getText().toString();
 
-        boolean isRepeated = true;
+        String[] checks = new String[]{forwards,backwards,stops,rights,lefts,rightFs,leftFs,rightBs,leftBs,p0s,p1s,p2s,p3s};
 
+        boolean isRepeated = isRepeated(checks);
         if (isRepeated){
-
+            Toast.makeText(this.getActivity(),"Thông số đã bị trùng!",Toast.LENGTH_SHORT).show();
         }else {
             //setting preferences
             SharedPreferences prefs = this.getActivity().getSharedPreferences(getString(R.string.pref_name), Context.MODE_PRIVATE);
@@ -138,13 +141,35 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
             editor.putString(getString(R.string.p3_pref), p3s);
 
             editor.apply();
+            Toast.makeText(this.getActivity(),"Thông tin đã được lưu",Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private boolean isRepeated(String[] checks) {
+        for (int i=0;i<checks.length-1;i++){
+            for (int j=i+1;j<checks.length;j++){
+                if (checks[i].equals(checks[j])){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
     public void onClick(View v) {
         if (v == save){
             saveData();
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (getActivity() != null){
+            if (isVisibleToUser){
+                loadSetting();
+            }
         }
     }
 }
